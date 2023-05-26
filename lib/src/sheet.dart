@@ -2,10 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'sheet_container.dart';
 import 'specs.dart';
@@ -14,13 +12,33 @@ import 'util.dart';
 part 'scrolling.dart';
 part 'sheet_dialog.dart';
 
+/// {@template sliding_sheet.builder}
+/// The builder for the main content of the sheet that will be scrolled if
+/// the content is bigger than the height that the sheet can expand to.
+/// {@endtemplate}
 typedef SheetBuilder = Widget Function(BuildContext context, SheetState state);
 
+/// {@template sliding_sheet.customBuilder}
+/// Allows you to supply your own custom sroll view. Useful for infinite lists
+/// that cannot be shrinkWrapped like long lists.
+/// {@endtemplate}
 typedef CustomSheetBuilder = Widget Function(
     BuildContext context, ScrollController controller, SheetState state);
 
+/// {@template sliding_sheet.headerBuilder}
+/// The builder for a header that will be displayed at the top of the sheet
+/// that wont be scrolled.
+/// {@endtemplate}
 typedef SheetListener = void Function(SheetState state);
 
+/// {@template sliding_sheet.onDismissPrevented}
+/// A callback that gets invoked when a user tried to dismiss the dialog
+/// while [isDimissable] is set to `true`.
+///
+/// The `backButton` flag indicates whether the user tried to dismiss the sheet
+/// using the backButton, while the `backDrop` flag indicates whether the user tried
+/// to dismiss the sheet by tapping the backdrop.
+/// {@endtemplate}
 typedef OnDismissPreventedCallback = void Function(
     bool backButton, bool backDrop);
 
@@ -1027,7 +1045,8 @@ class _SlidingSheetState extends State<SlidingSheet>
     if (scrollSpec.overscroll) {
       scrollView = GlowingOverscrollIndicator(
         axisDirection: AxisDirection.down,
-        color: scrollSpec.overscrollColor ?? Theme.of(context).accentColor,
+        color: scrollSpec.overscrollColor ??
+            Theme.of(context).colorScheme.secondary,
         child: scrollView,
       );
     }
